@@ -1,3 +1,10 @@
+local version = select(4, GetBuildInfo())
+local backdropTemplate
+
+if version >= 20500 then
+	backdropTemplate = "BackdropTemplate"
+end
+
 local unitscan = CreateFrame'Frame'
 local forbidden
 unitscan:SetScript('OnUpdate', function() unitscan.UPDATE() end)
@@ -124,17 +131,20 @@ function unitscan.LOAD()
 	end)
 	button:SetFrameStrata'FULLSCREEN_DIALOG'
 	button:SetNormalTexture[[Interface\AddOns\unitscan\UI-Achievement-Parchment-Horizontal]]
-	button:SetBackdrop{
+	button.backdrop = CreateFrame("Frame","$parent_backdrop",button,backdropTemplate)
+	button.backdrop:SetAllPoints(button)
+	button.backdrop:SetFrameLevel(1)
+	button.backdrop:SetBackdrop({
 		tile = true,
 		edgeSize = 16,
 		edgeFile = [[Interface\Tooltips\UI-Tooltip-Border]],
-	}
-	button:SetBackdropBorderColor(unpack(BROWN))
+	})
+	button.backdrop:SetBackdropBorderColor(unpack(BROWN))
 	button:SetScript('OnEnter', function(self)
-		self:SetBackdropBorderColor(unpack(YELLOW))
+		self.backdrop:SetBackdropBorderColor(unpack(YELLOW))
 	end)
 	button:SetScript('OnLeave', function(self)
-		self:SetBackdropBorderColor(unpack(BROWN))
+		self.backdrop:SetBackdropBorderColor(unpack(BROWN))
 	end)
 	function button:set_target(name)
 		self:SetText(name)
